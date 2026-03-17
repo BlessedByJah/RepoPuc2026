@@ -2,7 +2,6 @@
 .model small
 .stack 100h
 ;Murilo Augusto De Mattos Marciano
-;RA: 25021612
 
 ;AREA PARA DECLARACAO DE VARIAVEIS
 .data
