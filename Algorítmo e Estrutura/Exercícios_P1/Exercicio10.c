@@ -1,11 +1,12 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-int soma(int x, int y)
+//exercicio 10
+int multiplicacao(int x, int y)
 {
-    if(y == 0)
+    if(y == 1)
     {
         return x;
     }
-    return soma(x++,y--);
+    return x + multiplicacao(x, y--);
 }
