@@ -33,29 +33,13 @@ LOOPPRINCIPAL:
       int 10h
         
       ;ESCREVER CARACTER  
-     ; NA POSICAO DO CURSOR
-     ;AL = CARACTER
-     ;BH = NUMERO DA PAGINA
-     ;CX = NUMERO DE REPETICAO
-     ;RETORNO
-     ; NAO SE APLICA
-     mov al,"*"
+     mov al,"0"
      mov bh,paginaVideo
      mov cx,caracterRepeticao
      mov ah,0Ah   ;CODIGO FUNCAO
      int 10h
      
-     ;LER UMA TECLA - TECLADO ? BIOS
-    ;SE TECLADO N?O COMPATIVEL COM
-    ; IBMPC, EFETUA A LEITURA DE 
-    ; TODA A SEQUENCIA DE VALORES
-    ; GERADOS
-    ;ah = 10h ; LER TECLA
-    ;           ESPERA TECLA SER 
-    ;            DIGITADA
-    ; RETORNO
-    ; Al : CARACTER LIDO
-    ; AH : Scan Code
+    ;Ler Tecla
     mov ah,10h 
     int 16h
     mov tecla,al
@@ -86,19 +70,18 @@ Desvio1:
     mov dlin,1
 Desvio2:
     ;Direita
-    cmp cursorCol,79
+    cmp cursorCol,78
     jbe Desvio3
     mov dcol,-1
     
 Desvio3:
     ;Esquerda
-    cmp cursorLin,1
+    cmp cursorCol,1
     jae Desvio4
-    mov dlin,1
+    mov dcol,1
+    
 Desvio4:
     jmp LOOPPRINCIPAL
-       
-jmp LOOPPRINCIPAL
     
 sairPrograma:
  ; Finaliza o programa
