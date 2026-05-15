@@ -1,0 +1,63 @@
+# include <stdio.h>
+# include <stdlib.h>
+# define CAPACITY 100
+# define TRUE 1
+# define FALSE 0
+
+typedef struct
+ {
+   int values[CAPACITY];
+   int topA;
+   int topB;
+ } TwoStacks;
+void initialize(TwoStacks *twoStacks)
+ {
+// TODO : implement this function.
+    twoStacks->topA = CAPACITY;
+    twoStacks->topB = -1;
+ }
+int isEmpty(TwoStacks *twoStacks)
+ {
+// TODO : implement this function.
+    return twoStacks->topA == -1 && twoStacks->topB == CAPACITY;
+ }
+int isFull(TwoStacks *twoStacks)
+ {
+// TODO : implement this function.
+    //return twoStacks->topA == CAPACITY + 1 && twoStacks->topB == CAPACITY -1;
+    return twoStacks->topA + 1 == twoStacks->topB;
+ }
+int push(TwoStacks *twoStacks, int values, int isA)
+ {
+    if(isFull(twoStacks))
+    {
+        printf("ERRO: a pilha esta cheia.\n");
+        return 0;
+    }
+    
+    if(isA == TRUE)
+    {
+      twoStacks->value[++twoStacks->topA] = value;
+    }
+    else
+    {
+      twoStacks->value[--twoStacks->topB] = value;
+    }
+
+    return 1;
+ }
+int pop(TwoStacks *twoStacks, int isA)
+ {
+// TODO : implement this function.
+ }
+int main()
+ {
+   TwoStacks twoStacks;
+   initialize(&twoStacks);
+   push(&twoStacks, 10, TRUE);
+   push(&twoStacks, 20, TRUE);
+   push(&twoStacks, 30, FALSE);
+   push(&twoStacks, 40, FALSE);
+   push(&twoStacks, 50, TRUE);
+   pop(&twoStacks, FALSE);
+ }
