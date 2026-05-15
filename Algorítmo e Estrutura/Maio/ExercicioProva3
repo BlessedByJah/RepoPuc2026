@@ -19,13 +19,13 @@ void initialize(TwoStacks *twoStacks)
 int isEmpty(TwoStacks *twoStacks)
  {
 // TODO : implement this function.
-    return twoStacks->topA == -1 && twoStacks->topB == CAPACITY;
+    return twoStacks->topA == CAPACITY && twoStacks->topB == -1;
  }
 int isFull(TwoStacks *twoStacks)
  {
 // TODO : implement this function.
     //return twoStacks->topA == CAPACITY + 1 && twoStacks->topB == CAPACITY -1;
-    return twoStacks->topA + 1 == twoStacks->topB;
+    return twoStacks->topA == twoStacks->topB;
  }
 int push(TwoStacks *twoStacks, int values, int isA)
  {
@@ -37,18 +37,25 @@ int push(TwoStacks *twoStacks, int values, int isA)
     
     if(isA == TRUE)
     {
-      twoStacks->value[++twoStacks->topA] = value;
+      twoStacks->values[--twoStacks->topA] = values;
     }
     else
     {
-      twoStacks->value[--twoStacks->topB] = value;
+      twoStacks->values[++twoStacks->topB] = values;
     }
 
     return 1;
  }
 int pop(TwoStacks *twoStacks, int isA)
  {
-// TODO : implement this function.
+    if (isA == TRUE)
+    {
+      return twoStacks->values[twoStacks->topA--];
+    }
+    else
+    {
+      return twoStacks->values[twoStacks->topB++];
+    }
  }
 int main()
  {
