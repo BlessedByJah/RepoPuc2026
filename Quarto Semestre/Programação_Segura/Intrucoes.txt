@@ -1,2 +1,0 @@
-baixar a extensão do DOCKER no vscode 
-e ter o docker no desktop

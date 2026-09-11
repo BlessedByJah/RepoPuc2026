@@ -1,0 +1,8 @@
+###########################################
+## baixar a extensão do DOCKER no vscode ##
+## e ter o docker no desktop             ##
+###########################################
+
+docker build -t ubuntu
+
+docker run -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v C:\15686:/15686 ubuntu
