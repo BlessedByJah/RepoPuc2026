@@ -3,21 +3,23 @@
 #define TAMANHO 100
 #define CHAVE 3
 
-void cifrar(char 8text, int chave)
-{
-    i = 0;
+//# include <string.h>
 
-    while( tetxo[i] != '\0')
+void cifrar(char *texto, int chave)
+{
+    int i = 0;
+
+    while( texto[i] != '\0')
     {
-        if ( text[i] >= 'a' && texto[i] <= 'z')
+        if ( texto[i] >= 'a' && texto[i] <= 'z')
         {
-            text[i] = 'a' + (texto[i] - 'a' + chave) % 26;
+            texto[i] = 'a' + (texto[i] - 'a' + chave) % 26;
         }
         else
         {
             if (texto[i] >= 'A' && texto[i] <= 'Z')
             {
-              text[i] = 'A' + (texto[i] - 'A' + chave) % 26;
+              texto[i] = 'A' + (texto[i] - 'A' + chave) % 26;
             }
         }
         i = i + 1; 
@@ -26,36 +28,37 @@ void cifrar(char 8text, int chave)
 
 void decifrar( char *texto, int chave)
 {
-    i = 0;
+    int i = 0;
 
-    while( tetxo[i] != '\0')
+    while( texto[i] != '\0')
     {
-        if ( text[i] >= 'a' && texto[i] <= 'z')
+        if ( texto[i] >= 'a' && texto[i] <= 'z')
         {
-            text[i] = 'a' + (texto[i] - 'a' - chave) % 26;
+            texto[i] = 'a' + (texto[i] - 'a' - chave + 26) % 26;
         }
         else
         {
             if (texto[i] >= 'A' && texto[i] <= 'Z')
             {
-              text[i] = 'A' + (texto[i] - 'A' - chave) % 26;
+              texto[i] = 'A' + (texto[i] - 'A' - chave + 26) % 26;
             }
         }
-    }
+         i = i + 1;
+    }   
 }
 
 int main( int argc, char *argv[])
 {
-    chr mensagem[TAMANHO];
+    char mensagem[TAMANHO] = "IN FUTURE WE TRUST" ; 
     int chave = CHAVE;
 
     if(argc < 2)
     {
         printf("USAGE: %s \"mensagem\" [key]\n", argv[0]); 
-        retunr EXIT_FAILURE;
+        return EXIT_FAILURE;
     }
 
-    if(argv > 2)
+    if(argc > 2)
     {
         chave = atoi(argv[2]);
     }
