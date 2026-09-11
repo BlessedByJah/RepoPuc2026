@@ -35,7 +35,7 @@ values
 select clientes.nome, pedidos.data_pedido
 from clientes join pedidos
 on clientes.codigo = pedidos.codigo_cliente;
-==
+
 Select 
 	c.codigo,
     c.nome,
@@ -53,12 +53,12 @@ FROM clientes c
 LEFT JOIN pedidos p
 		ON c.codigo = p.codigo_cliente
         WHERE p.codigo IS NULL;
-==
+
 
 ALTER TABLE pedidos
 ADD CONSTRAINT chk_codigo_cliente
 CHECK(codigo_cliente BETWEEN 1 AND 6);
-==
+
 alter table clientes
 add sexo char(1) check (sexo IN ('M', 'F'));
 
