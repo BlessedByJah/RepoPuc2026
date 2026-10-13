@@ -42,7 +42,6 @@ public
 			status=0;
 			return status;
 		}
-		6  11 + 2  10 + 1  9 + 2  8 + 0  7 + 9  6 + 2  5 + 5  4 + 8  3 + D  2
 		int total2=0;
 		int cont2=0;
 		for(int pos=11; pos=2; pos--)
