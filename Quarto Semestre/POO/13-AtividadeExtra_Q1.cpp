@@ -75,7 +75,7 @@ int main()
     //Montar um swithc dps pra voltar e tals 
 
     printf("====== YBM - YOUNG BANK OF MART ======\n");
-    printf("Digite o nome: ");
+    printf("Digite o Nome: ");
     scanf(" %[^\n]", Nome);
     printf("Digite o CPF (somente numeros): ");
     scanf(" %11s", CPF);
