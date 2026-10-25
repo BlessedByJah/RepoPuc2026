@@ -19,11 +19,11 @@ class CONTABANCO
         // 0 nao ativada 1 ativada 2 bloqueada 3 cancelada
     }
 
-    public: void CadastrarConta(CADASTROCLIENTE c, int Ag, int Cc)
+    public: void CadastrarConta(CADASTROCLIENTE cli, int Ag, int Corrente)
     {
-        cliente = c;
+        cliente = cli;
         Agencia = Ag;
-        Conta = Cc;
+        Conta = Corrente;
         StatusConta = 1;
         SaldoConta = cliente.getSaldo();
     };
@@ -33,7 +33,7 @@ class CONTABANCO
         if (StatusConta == 1 && QtdLancamentos < 1000 && SaldoConta + Valor >= 0)
         {
             Lancamentos[QtdLancamentos] = Valor;
-            QtdLancamentos++;
+            QtdLancamentos = QtdLancamentos + 1;
             SaldoConta = SaldoConta + Valor;
             return 1;
         }
@@ -48,12 +48,30 @@ class CONTABANCO
     {
          StatusConta = 2; 
     };
-    public: void setCancelar()   { StatusConta = 3; };
-    public: float getSaldo()     { return SaldoConta; };
-    public: int getAgencia()     { return Agencia; };
-    public: int getConta()       { return Conta; };
-    public: void setAgencia(int Ag) { Agencia = Ag; };
-    public: void setConta(int Cc)   { Conta = Cc; };
+    public: void setCancelar()   
+    { 
+        StatusConta = 3;
+    };
+    public: float getSaldo()     
+    { 
+        return SaldoConta;
+    };
+    public: int getAgencia()     
+    { 
+        return Agencia;
+    };
+    public: int getConta()       
+    { 
+        return Conta;
+    };
+    public: void setAgencia(int Ag) 
+    { 
+        Agencia = Ag;
+    };
+    public: void setConta(int Cc)   
+    { 
+        Conta = Cc;
+    };
 };
 
 int main()
