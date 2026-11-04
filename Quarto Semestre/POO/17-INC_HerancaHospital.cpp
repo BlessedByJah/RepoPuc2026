@@ -24,18 +24,18 @@ class DADOSPESSOAL
 {
     protected: char nome[100];
     protected: char sexo[100];
-    protectec: int idade;
+    protected: int idade;
     
     //CONSTRUTOR
     public: DADOSPESSOAL()
     {
         strcpy(nome,"");
         strcpy(sexo,"");
-        idade=-1;
+        idade = -1;
     };
     
     //CADASTRAR DADOS
-    public: void setCadastro(char *nm,char *sx,int idd)
+    public: void setCadastro(char *nm, char *sx, int idd)
     {
         strcpy(nome,nm);
         strcpy(sexo,sx);
@@ -81,13 +81,23 @@ class PACIENTE: public DADOSPESSOAL
     protected: float colesterol;
     
     
-}
+};
 
 int main()
 {
+    char nome[1000], sexo[10];
+    int idade[100];
+
     PACIENTE DADOSPESSOAL;
     
+    strcpy(nome,"Jorge Ben Jor");
+    strcpy(sexo,"Homem");
     
+    DADOSPESSOAL.setCadastro(nome,sexo,51);
+    
+    printf("\n [NOME]:  %s",DADOSPESSOAL.getNOME());
+    printf("\n [SEXO]:  %s",DADOSPESSOAL.getSEXO());
+    printf("\n [IDADE]:  %d",DADOSPESSOAL.getIDADE());
     printf("\n\nIN FUTURE WE TRUST");  
 
     return 0;
