@@ -79,19 +79,20 @@ class PACIENTE: public DADOSPESSOAL
     protected: char tiposangue[10];
     protected: float glicose;
     protected: float colesterol;  
-};
-
+    //protected: float FGC;
+    
 public: PACIENTE()
 {
     strcpy(tiposangue,"");
     glicose = -1;
     colesterol = -1;
+    //FGC = -1;
 
     strcpy(nome,"");
     strcpy(sexo,"");
     idade = -1;
 }
-public: PACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
+public: void setPACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
 {
     strcpy(tiposangue,ts);
     glicose = gl;
@@ -100,28 +101,74 @@ public: PACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
     strcpy(nome,nm);
     strcpy(sexo,sx);
     idade = idd;
+    //FGC = FatorGC();
 }
-public: char getTipoSangue()
+public: char *getTipoSangue()
 {
-    
-}
+    return tiposangue;
+};
+public: float getGlicose()
+{
+    return glicose;
+};
+public: float getColesterol()
+{
+    return colesterol;
+};
+    public: void setColesterol(float cl)
+    {
+      colesterol = cl;
+    };
+    public: void setGlicose(float gl)
+    {
+         glicose = gl;
+    }
+    public: void setTipoSangue(char *ts)
+    {
+    strcpy(tiposangue,ts);
+    }
+    public: float FatorGC( float cl, float gl)
+    {
+        int FGC =0;
+        
+       if (gl > 0)
+       {
+           FGC = cl / (gl * gl * 1.45 );
+           return FGC;
+       }
+       else
+        {
+            printf("\n || ERRO: Glicose INSERIDA MENOR QUE ZERO ||");
+        };
+    }
+};
+//calcular fator GC == colesterol  / (glicose * glicose ) * 1.45
 
 int main()
 {
     char nome[1000], sexo[10];
     int idade[100];
 
-    PACIENTE DADOSPESSOAL;
+    PACIENTE paciente;
     
     strcpy(nome,"Jorge Ben Jor");
     strcpy(sexo,"Homem");
-    
-    DADOSPESSOAL.setCadastro(nome,sexo,51);
-    
-    printf("\n [NOME]:  %s",DADOSPESSOAL.getNOME());
-    printf("\n [SEXO]:  %s",DADOSPESSOAL.getSEXO());
-    printf("\n [IDADE]:  %d",DADOSPESSOAL.getIDADE());
-    printf("\n\nIN FUTURE WE TRUST");  
 
+    paciente.setPACIENTE(AuxTipoSangue,220, 30, AuxNome, AuxSexo, 23)
+    {
+        
+    }
+    
+    
+    
+    printf("\n [NOME]:  %s",paciente.getNOME());
+    printf("\n [SEXO]:  %s",paciente.getSEXO());
+    printf("\n [IDADE]:  %d",paciente.getIDADE());
+    
+    printf("\n\nIN FUTURE WE TRUST");  
+    
+    
+    
+    //Classe CONSULTA herdara os dados da classe PACIENTE
     return 0;
 }
