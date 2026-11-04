@@ -78,10 +78,33 @@ class PACIENTE: public DADOSPESSOAL
 {
     protected: char tiposangue[10];
     protected: float glicose;
-    protected: float colesterol;
-    
-    
+    protected: float colesterol;  
 };
+
+public: PACIENTE()
+{
+    strcpy(tiposangue,"");
+    glicose = -1;
+    colesterol = -1;
+
+    strcpy(nome,"");
+    strcpy(sexo,"");
+    idade = -1;
+}
+public: PACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
+{
+    strcpy(tiposangue,ts);
+    glicose = gl;
+    colesterol = cl;
+
+    strcpy(nome,nm);
+    strcpy(sexo,sx);
+    idade = idd;
+}
+public: char getTipoSangue()
+{
+    
+}
 
 int main()
 {
