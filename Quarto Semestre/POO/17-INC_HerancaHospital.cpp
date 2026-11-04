@@ -127,9 +127,13 @@ public: float getColesterol()
     {
     strcpy(tiposangue,ts);
     }
-    public: float FatorGC( float cl, float gl)
+    public: float FatorGC()
     {
-        int FGC =0;
+        float FGC =0, gl,cl;
+        
+        glicose = gl;
+        colesterol = cl;
+        
         
        if (gl > 0)
        {
@@ -154,16 +158,16 @@ int main()
     strcpy(nome,"Jorge Ben Jor");
     strcpy(sexo,"Homem");
 
-    paciente.setPACIENTE(AuxTipoSangue,220, 30, AuxNome, AuxSexo, 23)
-    {
-        
-    }
+    paciente.setPACIENTE(AuxTipoSangue,220, 30, AuxNome, AuxSexo, 23);
     
+    printf("\n [NOME]:    %s",paciente.getNOME());
+    printf("\n [SEXO]:    %s",paciente.getSEXO());
+    printf("\n [IDADE]:    %d",paciente.getIDADE());
+    printf("\n\n [Tipo Sanguíneo]:    %s", paciente.getTipoSangue());
+    printf("\n [COLESTEROL]:    %f",paciente.getColesterol());
+    printf("\n [GLICOSE]:    %f",paciente.getGlicose());
+    printf("\n [FGC]:    %f", paciente.FatorGC));
     
-    
-    printf("\n [NOME]:  %s",paciente.getNOME());
-    printf("\n [SEXO]:  %s",paciente.getSEXO());
-    printf("\n [IDADE]:  %d",paciente.getIDADE());
     
     printf("\n\nIN FUTURE WE TRUST");  
     
