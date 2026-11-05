@@ -81,43 +81,43 @@ class PACIENTE: public DADOSPESSOAL
     protected: float colesterol;  
     //protected: float FGC;
     
-public: PACIENTE()
-{
-    strcpy(tiposangue,"");
-    glicose = -1;
-    colesterol = -1;
-    //FGC = -1;
-
-    strcpy(nome,"");
-    strcpy(sexo,"");
-    idade = -1;
-}
-public: void setPACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
-{
-    strcpy(tiposangue,ts);
-    glicose = gl;
-    colesterol = cl;
-
-    strcpy(nome,nm);
-    strcpy(sexo,sx);
-    idade = idd;
-    //FGC = FatorGC();
-}
-public: char *getTipoSangue()
-{
-    return tiposangue;
-};
-public: float getGlicose()
-{
-    return glicose;
-};
-public: float getColesterol()
-{
-    return colesterol;
-};
+    public: PACIENTE()
+    {
+        strcpy(tiposangue,"");
+        glicose = -1;
+        colesterol = -1;
+        //FGC = -1;
+    
+        strcpy(nome,"");
+        strcpy(sexo,"");
+        idade = -1;
+    }
+    public: void setPACIENTE(char *ts, float gl, float cl, char *nm, char *sx, int idd)
+    {
+        strcpy(tiposangue,ts);
+        glicose = gl;
+        colesterol = cl;
+    
+        strcpy(nome,nm);
+        strcpy(sexo,sx);
+        idade = idd;
+        //FGC = FatorGC();
+    }
+    public: char *getTipoSangue()
+    {
+        return tiposangue;
+    };
+    public: float getGlicose()
+    {
+        return glicose;
+    };
+    public: float getColesterol()
+    {
+        return colesterol;
+    };
     public: void setColesterol(float cl)
     {
-      colesterol = cl;
+        colesterol = cl;
     };
     public: void setGlicose(float gl)
     {
@@ -125,7 +125,7 @@ public: float getColesterol()
     }
     public: void setTipoSangue(char *ts)
     {
-    strcpy(tiposangue,ts);
+        strcpy(tiposangue,ts);
     }
     public: float FatorGC()
     {
@@ -147,6 +147,82 @@ public: float getColesterol()
     }
 };
 //calcular fator GC == colesterol  / (glicose * glicose ) * 1.45
+class CONSULTA: public PACIENTE
+{
+    protected: char Observacao[10000];
+    protected: char MedicoResponsavel[1000];
+    protected: int Data[200];
+    protected: int Horario[20];
+    
+    public: CONSULTA()
+    {
+        strcpy(nome,"");
+        strcpy(sexo,"");
+        idade = -1;
+        
+        strcpy(tiposangue,"");
+        glicose = -1;
+        colesterol = -1;
+        //FGC = -1;
+    
+        strcpy(Observacao, "");
+        strcpy(MedicoResponsavel, "");
+        Data = -1;
+        Horario = -1;
+    };
+    public: void setConsulta(char *ts, float gl, float cl, char *nm, char *sx, int idd, char *obs, char *med, int dt, int hr)
+    {
+        strcpy(tiposangue,ts);
+        glicose = gl;
+        colesterol = cl;
+    
+        strcpy(nome,nm);
+        strcpy(sexo,sx);
+        idade = idd;
+        //FGC = FatorGC();
+        
+        strcpy(Observacao, obs);
+        strcpy(MedicoResponsavel, med);
+        Data = dt;
+        Horario = hr;
+    }
+    public: char *getObservacao()
+    {
+    return Observacao;
+    };
+    public: char *getMedicoResponsavel()
+    {
+        return MedicoResponsavel;
+    };
+    public: int getHorario()
+    {
+        return Horario;
+    };
+    public: int getData()
+    {
+        return Data;
+    }
+    public: void setObservacao()
+    {
+        strcpy(Observacao, obs);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}
 
 int main()
 {
