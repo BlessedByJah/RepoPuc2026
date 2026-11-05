@@ -151,8 +151,8 @@ class CONSULTA: public PACIENTE
 {
     protected: char Observacao[10000];
     protected: char MedicoResponsavel[1000];
-    protected: int Data[200];
-    protected: int Horario[20];
+    protected: char Data[200];
+    protected: char Horario[20];
     
     public: CONSULTA()
     {
@@ -167,10 +167,10 @@ class CONSULTA: public PACIENTE
     
         strcpy(Observacao, "");
         strcpy(MedicoResponsavel, "");
-        Data = -1;
-        Horario = -1;
+        strcpy(Data , "");
+        strcpy(Horario , "");
     };
-    public: void setConsulta(char *ts, float gl, float cl, char *nm, char *sx, int idd, char *obs, char *med, int dt, int hr)
+    public: void setConsulta(char *ts, float gl, float cl, char *nm, char *sx, int idd, char *obs, char *med, char *dt, char *hr)
     {
         strcpy(tiposangue,ts);
         glicose = gl;
@@ -183,8 +183,8 @@ class CONSULTA: public PACIENTE
         
         strcpy(Observacao, obs);
         strcpy(MedicoResponsavel, med);
-        Data = dt;
-        Horario = hr;
+        strcpy(Data , dt);
+        strcpy(Horario , hr);
     }
     public: char *getObservacao()
     {
@@ -194,15 +194,15 @@ class CONSULTA: public PACIENTE
     {
         return MedicoResponsavel;
     };
-    public: int getHorario()
+    public: char *getHorario()
     {
         return Horario;
     };
-    public: int getData()
+    public: char *getData()
     {
         return Data;
     }
-    public: void setObservacao()
+    public: void setObservacao(char *obs)
     {
         strcpy(Observacao, obs);
     }
@@ -210,19 +210,11 @@ class CONSULTA: public PACIENTE
     
     
     
+
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-}
+};
 
 int main()
 {
@@ -235,7 +227,7 @@ int main()
     strcpy(AuxSexo,"Homem");
     strcpy(AuxTipoSangue,"AB+");
 
-    paciente.setPACIENTE(AuxTipoSangue,220, 30, AuxNome, AuxSexo, 23);
+    consultoria.setConsulta(AuxTipoSangue, 220, 30, AuxNome, AuxSexo, 23, char *obs, char *med, char *dt, char *hr)
     
     printf("\n [NOME]:    %s",paciente.getNOME());
     printf("\n [SEXO]:    %s",paciente.getSEXO());
@@ -245,6 +237,8 @@ int main()
     printf("\n [GLICOSE]:    %7.2f",paciente.getGlicose());
     printf("\n [FGC]:    %f", paciente.FatorGC());
     
+    PACIENTE CONSULTORIA;
+    printf("\n [GLICOSE]:    %7.2f",paciente.getGlicose());
     
     printf("\n\nIN FUTURE WE TRUST");  
     
