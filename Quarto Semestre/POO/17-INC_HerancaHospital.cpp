@@ -219,26 +219,33 @@ class CONSULTA: public PACIENTE
 int main()
 {
     char AuxNome[1000], AuxSexo[10], AuxTipoSangue[20];
+    char AuxObservacao[1000],AuxMedico[200],Auxdata[30],AuxHorario[30],AuxData[20];
     int idade[100];
 
     PACIENTE paciente;
+    CONSULTA consultoria;
     
     strcpy(AuxNome,"Jorge Ben Jor");
     strcpy(AuxSexo,"Homem");
     strcpy(AuxTipoSangue,"AB+");
 
-    consultoria.setConsulta(AuxTipoSangue, 220, 30, AuxNome, AuxSexo, 23, char *obs, char *med, char *dt, char *hr)
+    strcpy(AuxObservacao,"Reage a Musica");
+    strcpy(AuxMedico,"DR. House");
+    strcpy(AuxData,"05/11/2012");
+    strcpy(AuxHorario,"20:00");
+
+    consultoria.setConsulta(AuxTipoSangue, 220, 30, AuxNome, AuxSexo, 23, AuxObservacao, AuxMedico, AuxData, AuxHorario);
     
-    printf("\n [NOME]:    %s",paciente.getNOME());
-    printf("\n [SEXO]:    %s",paciente.getSEXO());
-    printf("\n [IDADE]:   %d",paciente.getIDADE());
-    printf("\n\n [T/ Sanguíneo]:    %s", paciente.getTipoSangue());
-    printf("\n [COLESTEROL]:    %7.2f",paciente.getColesterol());
-    printf("\n [GLICOSE]:    %7.2f",paciente.getGlicose());
-    printf("\n [FGC]:    %f", paciente.FatorGC());
+    printf("\n [NOME]:    %s",consultoria.getNOME());
+    printf("\n [SEXO]:    %s",consultoria.getSEXO());
+    printf("\n [IDADE]:   %d",consultoria.getIDADE());
+    printf("\n\n [T/ Sanguíneo]:    %s", consultoria.getTipoSangue());
+    printf("\n [COLESTEROL]:    %7.2f",consultoria.getColesterol());
+    printf("\n [GLICOSE]:    %7.2f",consultoria.getGlicose());
+    printf("\n [FGC]:    %f", consultoria.FatorGC());
     
-    PACIENTE CONSULTORIA;
-    printf("\n [GLICOSE]:    %7.2f",paciente.getGlicose());
+    
+    printf("\n [GLICOSE]:    %7.2f",consultoria.getGlicose());
     
     printf("\n\nIN FUTURE WE TRUST");  
     
@@ -246,4 +253,4 @@ int main()
     
     //Classe CONSULTA herdara os dados da classe PACIENTE
     return 0;
-}
+}       
