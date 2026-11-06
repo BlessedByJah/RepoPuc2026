@@ -129,15 +129,14 @@ class PACIENTE: public DADOSPESSOAL
     }
     public: float FatorGC()
     {
-        float FGC =0, gl,cl;
+        float FGC = 0, gl = 540 ,cl = 300 ;
         
         glicose = gl;
         colesterol = cl;
         
-        
-       if (gl > 0)
+       if (glicose > 0)
        {
-           FGC = cl / (gl * gl * 1.45 );
+           FGC = colesterol / (glicose * glicose * 1.45 );
            return FGC;
        }
        else
@@ -205,15 +204,7 @@ class CONSULTA: public PACIENTE
     public: void setObservacao(char *obs)
     {
         strcpy(Observacao, obs);
-    }
-    
-    
-    
-    
-
-    
-    
-    
+    }   
 };
 
 int main()
@@ -234,23 +225,24 @@ int main()
     strcpy(AuxData,"05/11/2012");
     strcpy(AuxHorario,"20:00");
 
-    consultoria.setConsulta(AuxTipoSangue, 220, 30, AuxNome, AuxSexo, 23, AuxObservacao, AuxMedico, AuxData, AuxHorario);
+    consultoria.setConsulta(AuxTipoSangue, 220,30 , AuxNome, AuxSexo, 23, AuxObservacao, AuxMedico, AuxData, AuxHorario);
     
     printf("\n [NOME]:    %s",consultoria.getNOME());
     printf("\n [SEXO]:    %s",consultoria.getSEXO());
     printf("\n [IDADE]:   %d",consultoria.getIDADE());
-    printf("\n\n [T/ Sanguíneo]:    %s", consultoria.getTipoSangue());
+    printf("\n----------------------------------------------------");
+    printf("\n [T/ Sanguíneo]:    %s", consultoria.getTipoSangue());
     printf("\n [COLESTEROL]:    %7.2f",consultoria.getColesterol());
     printf("\n [GLICOSE]:    %7.2f",consultoria.getGlicose());
     printf("\n [FGC]:    %f", consultoria.FatorGC());
-    
-    
-    printf("\n [GLICOSE]:    %7.2f",consultoria.getGlicose());
+    printf("\n-----------------------------------------------------");
+    printf("\n [Medico]:    %s", consultoria.getMedicoResponsavel());
+    printf("\n [Data]:    %s", consultoria.getData());
+    printf("\n [Horário]:    %s", consultoria.getHorario());
+    printf("\n [Observação]:   %s", consultoria.getObservacao());
     
     printf("\n\nIN FUTURE WE TRUST");  
-    
-    
-    
+   
     //Classe CONSULTA herdara os dados da classe PACIENTE
     return 0;
 }       
