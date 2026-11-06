@@ -1,0 +1,283 @@
+#define _DEFAULT_SOURCE /* expõe explicit_bzero e gmtime_r na glibc */
+
+# include <stdio.h>
+# include <string.h>
+# include <stdlib.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <time.h>
+
+# define TOKEN_SIZE 16
+# define NIGHT_START_HOUR 20
+# define NIGHT_END_HOUR 6
+# define NIGHT_LIMIT_CENTS 100000L
+# define BRASILIA_OFFSET_HOURS (-3)
+
+/* Representa a sessão de um cliente conectado ao servidor de pagamentos. Guarda o nome do usuário autenticado e o token que identifica a sessão enquanto ela permanece ativa. */
+typedef struct
+{
+    char user[32];
+    unsigned char token[TOKEN_SIZE];
+} Session;
+
+// Registra um evento do servidor de pagamentos, precedido do instante em que ocorreu. A mensagem costuma conter o identificador da transação recebido do cliente. */
+void log_event(const char *message)
+{
+    printf("[LOG %ld] ", (long) time(NULL));
+    // DEFEITO: [CWE-134] -- message vem do cliente e era usada como formato do printf;
+    printf("%s", message);
+    printf("\n");
+}
+
+/* Recebe o identificador de uma transação enviado pelo cliente e o copia para um vetor local antes de registrá-lo. */
+void process_transaction(char *transaction_id)
+{
+    char received_id[16];
+    // DEFEITO: [CWE-121] -- transaction_id vem como argumento sem limite, 
+    snprintf(received_id, sizeof received_id, "%s", transaction_id);
+    printf("[A] Transaction received: %s\n", received_id);
+}
+
+/* Monta e imprime o comprovante de uma transferência aprovada, com o título do documento, o nome do cliente, as contas de origem e de destino e o código da transação. */
+void print_receipt(const char *customer, const char *source_account, const char *destination_account, const char *transaction_id)
+{
+    char title[32], name[16], code[64];
+
+    /* Justificativa: a origem é um literal de 21 caracteres (22 bytes com o NUL) e title tem 32 bytes; o cliente não controla esse texto, então não há overflow possível. */
+    // nosemgrep: insecure-use-string-copy-fn
+    strcpy(title, "Bank transfer receipt");
+
+    /* DEFEITO: CWE-121 -- customer vem de argv[2], sem limite, e name guarda 16 bytes; strcpy estourava a pilha. snprintf limita a cópia e sempre termina a string. */
+    snprintf(name, sizeof name, "%s", customer);
+
+    /* Justificativa: strncpy copia no máximo sizeof code - 1 bytes e a linha seguinte grava o NUL final, então não há overflow nem string sem terminador. */
+    // nosemgrep: insecure-use-string-copy-fn
+    strncpy(code, transaction_id, sizeof code - 1);
+    code[sizeof code - 1] = '\0';
+    printf("%s\n%s\nFrom account: %s\nTo account: %s\n%s\n", title, name, source_account, destination_account, code);
+}
+
+/* Preenche o token da sessão com bytes aleatórios lidos de /dev/urandom, a fonte de aleatoriedade fornecida pelo kernel. Devolve 0 quando o token foi preenchido por inteiro e -1 caso contrário. */
+int new_token(Session *current_session)
+{
+    int descriptor;
+    size_t filled = 0;
+
+    descriptor = open("/dev/urandom", O_RDONLY);
+
+    /* DEFEITO: CWE-252 -- o retorno de open e de read era ignorado; se falhasse ou lesse menos que TOKEN_SIZE, o token ficava com bytes não inicializados ou previsíveis. Agora a falha é detectada e propagada. */
+    if (descriptor < 0)
+    {
+        return -1;
+    }
+
+    while (filled < TOKEN_SIZE)
+    {
+        ssize_t received = read(descriptor, current_session->token + filled, TOKEN_SIZE - filled);
+
+        if (received < 0 && errno == EINTR)
+        {
+            continue;
+        }
+
+        if (received <= 0)
+        {
+            close(descriptor);
+            return -1;
+        }
+
+        filled += (size_t) received;
+    }
+
+    close(descriptor);
+    return 0;
+}
+
+/* Abre a sessão do cliente: reserva a memória da sessão, registra o nome do cliente e gera o primeiro token. Devolve NULL quando falta memória ou quando o token não pode ser gerado. */
+Session *open_session(const char *customer)
+{
+    Session *current_session = malloc(sizeof *current_session);
+
+    if (current_session == NULL)
+    {
+        return NULL;
+    }
+
+    snprintf(current_session->user, sizeof current_session->user, "%s", customer);
+
+    if (new_token(current_session) != 0)
+    {
+        free(current_session);
+        return NULL;
+    }
+
+    return current_session;
+}
+
+/* Gera um novo token para a sessão e confere que ele difere do token anterior, guardado em previous_token enquanto a comparação é feita. */
+int refresh_token(Session *current_session)
+{
+    unsigned char *previous_token = malloc(TOKEN_SIZE);
+    int changed;
+
+    if (previous_token == NULL)
+    {
+        return -1;
+    }
+
+    memcpy(previous_token, current_session->token, TOKEN_SIZE);
+
+    if (new_token(current_session) != 0)
+    {
+        free(previous_token);
+        return -1;
+    }
+
+    changed = (memcmp(previous_token, current_session->token, TOKEN_SIZE) != 0);
+    free(previous_token);
+
+    if (!changed)
+    {
+        printf("Token did not change.\n");
+        // DEFEITO: [CWE-415] aqui havia um segundo free(previous_token) sobre memória já liberada, que corrompia o heap. A liberação acontece uma única vez, acima. */
+        return -1;
+    }
+
+    return 0;
+}
+
+/* Encerra a sessão do cliente, registra a saída e devolve ao sistema a memória que a sessão ocupava. */
+void logout(Session *current_session)
+{
+    // DEFEITO: CWE-416 -- current_session->user era lido depois do free, com a correçãoele fica impresso e só então pode serdado free
+    printf("User %s logged out.\n", current_session->user);
+    free(current_session);
+}
+
+/* Compara o PIN informado pelo cliente com o PIN cadastrado da conta de origem e devolve um valor diferente de zero quando os dois coincidem. */
+int check_pin(const char *typed, const char *stored)
+{
+    char pin[8];
+    int matches;
+
+    /* DEFEITO: CWE-222 -- um PIN digitado com 8 ou mais caracteres era truncado para 7 e podia coincidir com um PIN cadastrado de 7. Agora é recusado antes da cópia. */
+    if (strlen(typed) >= sizeof pin)
+    {
+        return 0;
+    }
+
+    /* Justificativa: este memset só inicializa o vetor ainda vazio, antes de receber o PIN; não há segredo a apagar, então o compilador poder removê-lo não expõe nada. */
+    // nosemgrep: insecure-use-memset
+    memset(pin, 0, sizeof pin);
+    snprintf(pin, sizeof pin, "%s", typed);
+    matches = (strcmp(pin, stored) == 0);
+    /* DEFEITO: CWE-14 -- memset sobre um vetor que não é mais lido pode ser removido pelo compilador, deixando o PIN na pilha. explicit_bzero não pode ser descartada. */
+    explicit_bzero(pin, sizeof pin);
+    return matches;
+}
+
+/* Lê o valor da transferência, em centavos, da entrada padrão e devolve -1 quando a entrada não é um número inteiro positivo. */
+long read_amount(void)
+{
+    long cents;
+    printf("Amount (cents): ");
+
+    //Se o fgets não é valido como aplicação, não existe um buffer para estourar
+    if (scanf("%ld", &cents) != 1 || cents <= 0)
+    {
+        return -1;
+    }
+
+    return cents;
+}
+
+/* Informa se o instante atual pertence ao período noturno, das 20h às 6h no horário de Brasília (UTC-3), que não adota horário de verão desde 2019. */
+int is_night_period(void)
+{
+    time_t now;
+    struct tm universal_time;
+    int hour;
+    now = time(NULL);
+    gmtime_r(&now, &universal_time);
+    hour = (universal_time.tm_hour + 24 + BRASILIA_OFFSET_HOURS) % 24;
+    return hour >= NIGHT_START_HOUR || hour < NIGHT_END_HOUR;
+}
+
+/* Aplica o limite noturno do banco: transferências realizadas entre 20h e 6h podem ser de no máximo R$ 1.000,00. Devolve 1 quando o valor é permitido. */
+int within_night_limit(long cents)
+{
+    if (is_night_period() && cents > NIGHT_LIMIT_CENTS)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
+/* Autoriza a transferência e libera o valor para a conta de destino. É executada somente depois que todas as regras de negócio foram atendidas. */
+void authorize_payment(long cents, const char *source_account, const char *destination_account)
+{
+    printf("[A] Transfer of %ld cents from account %s to account %s authorized.\n", cents, source_account, destination_account);
+}
+
+/* Recusa a transferência: registra o motivo, encerra a sessão e devolve o código de saída que indica a recusa. */
+int reject_transfer(Session *current_session, const char *reason)
+{
+    log_event(reason);
+    logout(current_session);
+    return 1;
+}
+
+/* Ponto de entrada do servidor: recebe a transferência pela linha de comando, aplica as regras de negócio e autoriza a transferência quando todas elas são atendidas. */
+int main(int argc, char *argv[])
+{
+    Session *session;
+    const char *registered_pin;
+    long cents;
+
+    if (argc < 6)
+    {
+        printf("Usage: %s <transaction_id> <customer> <source_account> <destination_account> <pin>\n", argv[0]);
+        return 1;
+    }
+
+    process_transaction(argv[1]);
+    log_event(argv[1]);
+    session = open_session(argv[2]);
+
+    if (session == NULL)
+    {
+        return 1;
+    }
+
+    cents = read_amount();
+
+    if (cents < 0)
+    {
+        return reject_transfer(session, "Transfer rejected: invalid amount.");
+    }
+
+    if (!within_night_limit(cents))
+    {
+        return reject_transfer(session, "Transfer rejected: above the night limit.");
+    }
+
+    registered_pin = getenv("ACCOUNT_PIN");
+
+    if (registered_pin == NULL || !check_pin(argv[5], registered_pin))
+    {
+        return reject_transfer(session, "Transfer rejected: wrong PIN.");
+    }
+
+    if (refresh_token(session) != 0)
+    {
+        return reject_transfer(session, "Transfer rejected: token not renewed.");
+    }
+
+    authorize_payment(cents, argv[3], argv[4]);
+    print_receipt(argv[2], argv[3], argv[4], argv[1]);
+    log_event("Transfer approved.");
+    logout(session);
+    return 0;
+}
